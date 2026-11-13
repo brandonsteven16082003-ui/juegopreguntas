@@ -1,0 +1,178 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Compile game",
+			"type": "shell",
+			"command": "compile_game.bat",
+			"isBackground": false
+		},
+		{
+			"label": "Compile game from workspace",
+			"type": "shell",
+			"command": ".\\compile_game.bat",
+			"isBackground": false
+		},
+		{
+			"label": "Compile jogo preguntas C11",
+			"type": "shell",
+			"command": "C:\\msys64\\ucrt64\\bin\\gcc.exe",
+			"args": [
+				"-std=c11",
+				"-Wall",
+				"-Wextra",
+				"-Wpedantic",
+				"juego_preguntas.c",
+				"-o",
+				"juego_preguntas.exe"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compilar juego_preguntas",
+			"type": "shell",
+			"command": "gcc",
+			"args": [
+				"-std=c11",
+				"-Wall",
+				"-Wextra",
+				"-pedantic",
+				"juego_preguntas.c",
+				"-o",
+				"juego_preguntas.exe"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Compilar juego WebAssembly",
+			"type": "shell",
+			"command": ".\\compile_wasm.bat",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Install Expo dependencies",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build Expo mobile bundle",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Generate project PDF",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"documentation"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check Expo SDK dependencies",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"expo",
+				"install",
+				"--check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Expo development server (LAN)",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"start",
+				"--",
+				"--lan"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Upgrade Expo SDK 58",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"expo",
+				"install",
+				"expo@^58.0.0"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Align Expo SDK 58 packages",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"expo",
+				"install",
+				"--fix"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify Expo SDK 58 alignment",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"expo",
+				"install",
+				"--check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Start Expo SDK 58 LAN",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"start",
+				"--",
+				"--lan",
+				"--clear"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Publicar proyecto en GitHub",
+			"type": "shell",
+			"command": "git init; if ($LASTEXITCODE -ne 0) { exit 1 }; git branch -M main; if ($LASTEXITCODE -ne 0) { exit 1 }; git remote add origin https://github.com/brandonsteven16082003-ui/juegopreguntas.git; if ($LASTEXITCODE -ne 0) { exit 1 }; git add -A; if ($LASTEXITCODE -ne 0) { exit 1 }; git commit -m 'Initial project upload' -m ('Co-authored-by: Copilot ' + [char]60 + '223556219+Copilot@users.noreply.github.com' + [char]62); if ($LASTEXITCODE -ne 0) { exit 1 }; git push -u origin main",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111522">
+  <title>El Desafío — Concurso de preguntas</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #f7f5ef;
+      background: #10131d;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      --accent: #c8db9c;
+      --accent-dark: #283a34;
+      --glass: rgb(17 22 32 / 82%);
+      --muted: #c1c4cb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      background: #10131d;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .world {
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgb(9 15 28 / 5%) 0%, rgb(10 13 22 / 28%) 48%, #10131d 100%),
+        radial-gradient(ellipse at 50% 12%, rgb(255 242 203 / 40%), transparent 32%),
+        linear-gradient(155deg, #718b8a 0%, #3b5860 42%, #253341 100%);
+      transition: background 700ms ease;
+    }
+
+    body[data-level="1"] { --glass: rgb(17 22 32 / 66%); }
+
+    .world::before, .world::after {
+      position: absolute;
+      right: -8%;
+      bottom: 14%;
+      left: -8%;
+      height: 45%;
+      content: "";
+      background: linear-gradient(155deg, #526c65, #243c3b 66%);
+      clip-path: polygon(0 60%, 10% 47%, 20% 62%, 32% 28%, 42% 52%, 54% 17%, 66% 55%, 76% 34%, 90% 62%, 100% 42%, 100% 100%, 0 100%);
+      filter: drop-shadow(0 -14px 22px rgb(11 19 25 / 20%));
+      opacity: .8;
+    }
+
+    .world::after {
+      right: -12%;
+      bottom: 5%;
+      left: -12%;
+      height: 39%;
+      background: linear-gradient(160deg, #2f4944, #182824 72%);
+      clip-path: polygon(0 52%, 14% 42%, 28% 60%, 40% 29%, 53% 55%, 68% 32%, 82% 55%, 100% 36%, 100% 100%, 0 100%);
+      opacity: .9;
+    }
+
+    body[data-level="1"] .world {
+      background-color: #69c9f4;
+      animation: level-one-scenes 6s steps(1, end) infinite;
+      background-image:
+        linear-gradient(180deg, rgb(255 255 255 / 5%) 0%, transparent 48%, rgb(10 42 57 / 28%) 100%),
+        linear-gradient(#fff7df 0 0),
+        linear-gradient(#fff7df 0 0),
+        linear-gradient(#fff7df 0 0),
+        linear-gradient(#fff7df 0 0),
+        linear-gradient(#fff7df 0 0),
+        linear-gradient(#fff7df 0 0),
+        linear-gradient(#fff7df 0 0);
+      background-repeat: no-repeat;
+      background-size:
+        100% 100%,
+        64px 18px,
+        36px 18px,
+        52px 18px,
+        76px 18px,
+        40px 18px,
+        56px 18px,
+        32px 18px;
+      background-position:
+        0 0,
+        12% 19%,
+        calc(12% + 16px) calc(19% - 18px),
+        calc(12% + 64px) 19%,
+        69% 29%,
+        calc(69% + 20px) calc(29% - 18px),
+        calc(69% + 76px) 29%,
+        calc(69% + 36px) calc(29% + 18px);
+    }
+
+    body[data-level="1"] .world::before {
+      right: -8%;
+      bottom: 14%;
+      left: -8%;
+      height: 45%;
+      background: linear-gradient(180deg, #73dc58 0 18px, #42b84d 18px 100%);
+      clip-path: polygon(0 58%, 8% 58%, 8% 45%, 18% 45%, 18% 31%, 30% 31%, 30% 45%, 40% 45%, 40% 19%, 53% 19%, 53% 34%, 62% 34%, 62% 48%, 74% 48%, 74% 28%, 86% 28%, 86% 43%, 100% 43%, 100% 100%, 0 100%);
+      filter: none;
+      opacity: 1;
+      animation: level-one-hills 6s steps(1, end) infinite;
+    }
+
+    body[data-level="1"] .world::after {
+      right: -12%;
+      bottom: 5%;
+      left: -12%;
+      height: 39%;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 30px, rgb(16 93 47 / 20%) 30px 34px),
+        linear-gradient(180deg, #42bc4f 0 18px, #268b48 18px 100%);
+      clip-path: polygon(0 48%, 12% 48%, 12% 31%, 25% 31%, 25% 48%, 36% 48%, 36% 22%, 51% 22%, 51% 39%, 64% 39%, 64% 18%, 78% 18%, 78% 36%, 90% 36%, 90% 26%, 100% 26%, 100% 100%, 0 100%);
+      animation: level-one-foreground 6s steps(1, end) infinite;
+      opacity: 1;
+    }
+
+    body[data-level="1"] .ambient-light {
+      top: 13%;
+      left: 84%;
+      width: 52px;
+      height: 52px;
+      border-radius: 0;
+      background: #ffe17a;
+      box-shadow: 0 0 0 10px rgb(255 225 122 / 18%);
+      filter: none;
+      transform: none;
+      animation: level-one-sun 6s steps(1, end) infinite;
+    }
+
+    @keyframes level-one-scenes {
+      0%, 33.32% { background-color: #69c9f4; }
+      33.33%, 66.65% { background-color: #f3a965; }
+      66.66%, 100% { background-color: #6684bd; }
+    }
+
+    @keyframes level-one-hills {
+      0%, 33.32% {
+        background: linear-gradient(180deg, #73dc58 0 18px, #42b84d 18px 100%);
+        clip-path: polygon(0 58%, 8% 58%, 8% 45%, 18% 45%, 18% 31%, 30% 31%, 30% 45%, 40% 45%, 40% 19%, 53% 19%, 53% 34%, 62% 34%, 62% 48%, 74% 48%, 74% 28%, 86% 28%, 86% 43%, 100% 43%, 100% 100%, 0 100%);
+      }
+      33.33%, 66.65% {
+        background: linear-gradient(180deg, #eac15e 0 18px, #b9783f 18px 100%);
+        clip-path: polygon(0 63%, 12% 63%, 12% 35%, 24% 35%, 24% 49%, 36% 49%, 36% 23%, 49% 23%, 49% 43%, 61% 43%, 61% 16%, 74% 16%, 74% 38%, 88% 38%, 88% 28%, 100% 28%, 100% 100%, 0 100%);
+      }
+      66.66%, 100% {
+        background: linear-gradient(180deg, #85b7d9 0 18px, #466e9a 18px 100%);
+        clip-path: polygon(0 53%, 10% 53%, 10% 28%, 22% 28%, 22% 44%, 34% 44%, 34% 11%, 48% 11%, 48% 37%, 60% 37%, 60% 21%, 73% 21%, 73% 47%, 86% 47%, 86% 30%, 100% 30%, 100% 100%, 0 100%);
+      }
+    }
+
+    @keyframes level-one-foreground {
+      0%, 33.32% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 30px, rgb(16 93 47 / 20%) 30px 34px),
+          linear-gradient(180deg, #42bc4f 0 18px, #268b48 18px 100%);
+      }
+      33.33%, 66.65% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 30px, rgb(91 53 38 / 24%) 30px 34px),
+          linear-gradient(180deg, #b88548 0 18px, #80513a 18px 100%);
+      }
+      66.66%, 100% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 30px, rgb(29 44 82 / 28%) 30px 34px),
+          linear-gradient(180deg, #486ca0 0 18px, #2c456e 18px 100%);
+      }
+    }
+
+    @keyframes level-one-sun {
+      0%, 33.32% { left: 84%; top: 13%; background: #ffe17a; }
+      33.33%, 66.65% { left: 50%; top: 25%; background: #fff0bd; }
+      66.66%, 100% { left: 76%; top: 18%; background: #f6f1dc; }
+    }
+
+    body[data-level="2"] .world {
+      background-color: #171d35;
+      animation: level-two-scenes 4s steps(1, end) infinite;
+      background-image:
+        linear-gradient(180deg, rgb(17 23 43 / 12%) 0 38%, rgb(31 31 56 / 10%) 56%, #141b2d 100%),
+        repeating-linear-gradient(90deg, transparent 0 34px, rgb(255 191 119 / 78%) 35px 38px, transparent 39px 68px),
+        linear-gradient(90deg, #222b46 0 7%, transparent 7% 11%, #28324f 11% 22%, transparent 22% 25%, #222b46 25% 35%, transparent 35% 39%, #2c3450 39% 48%, transparent 48% 52%, #27314d 52% 64%, transparent 64% 68%, #202941 68% 79%, transparent 79% 83%, #2b3450 83% 95%, transparent 95%),
+        radial-gradient(ellipse at 50% 48%, #ffc17a 0, #e97868 12%, rgb(193 89 101 / 56%) 24%, transparent 48%),
+        linear-gradient(180deg, #202943 0%, #485773 39%, #bd777d 60%, #414357 72%, #252b3e 100%);
+      background-repeat: no-repeat, repeat, no-repeat, no-repeat, no-repeat;
+      background-size: 100% 100%, 68px 112px, 100% 100%, 100% 100%, 100% 100%;
+      background-position: center, center 43%, center, center, center;
+    }
+
+    body[data-level="2"] .world::before {
+      right: -3%;
+      bottom: 25%;
+      left: -3%;
+      height: 31%;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 23px, rgb(255 191 119 / 70%) 24px 27px, transparent 28px 47px),
+        linear-gradient(180deg, #46516a 0 9px, #242c43 9px 100%);
+      clip-path: polygon(0 33%, 9% 33%, 9% 0, 22% 0, 22% 36%, 30% 36%, 30% 18%, 43% 18%, 43% 42%, 51% 42%, 51% 7%, 65% 7%, 65% 38%, 75% 38%, 75% 12%, 89% 12%, 89% 43%, 100% 43%, 100% 100%, 0 100%);
+      animation: level-two-crowd 4s steps(1, end) infinite;
+      filter: drop-shadow(0 0 20px rgb(240 128 104 / 18%));
+      opacity: .86;
+    }
+
+    body[data-level="2"] .world::after {
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 29%;
+      background:
+        linear-gradient(180deg, rgb(247 166 122 / 35%), transparent 14%),
+        repeating-linear-gradient(90deg, transparent 0 11.8%, rgb(241 155 126 / 44%) 12% 12.25%, transparent 12.45% 24.7%),
+        repeating-linear-gradient(0deg, #34394d 0 2px, #45475a 2px 28px);
+      clip-path: polygon(0 18%, 100% 18%, 100% 100%, 0 100%);
+      animation: level-two-floor 4s steps(1, end) infinite;
+      opacity: .98;
+    }
+
+    @keyframes level-two-scenes {
+      0%, 24.99% {
+        background-image:
+          linear-gradient(180deg, rgb(17 23 43 / 12%) 0 38%, rgb(31 31 56 / 10%) 56%, #141b2d 100%),
+          repeating-linear-gradient(90deg, transparent 0 34px, rgb(255 191 119 / 78%) 35px 38px, transparent 39px 68px),
+          linear-gradient(90deg, #222b46 0 7%, transparent 7% 11%, #28324f 11% 22%, transparent 22% 25%, #222b46 25% 35%, transparent 35% 39%, #2c3450 39% 48%, transparent 48% 52%, #27314d 52% 64%, transparent 64% 68%, #202941 68% 79%, transparent 79% 83%, #2b3450 83% 95%, transparent 95%),
+          radial-gradient(ellipse at 50% 48%, #ffc17a 0, #e97868 12%, rgb(193 89 101 / 56%) 24%, transparent 48%),
+          linear-gradient(180deg, #202943 0%, #485773 39%, #bd777d 60%, #414357 72%, #252b3e 100%);
+      }
+      25%, 49.99% {
+        background-image:
+          linear-gradient(180deg, rgb(18 15 34 / 15%) 0 38%, rgb(33 21 39 / 12%) 56%, #171a29 100%),
+          repeating-linear-gradient(90deg, transparent 0 34px, rgb(248 180 104 / 82%) 35px 38px, transparent 39px 68px),
+          repeating-linear-gradient(90deg, #29283f 0 8%, transparent 8% 12%, #322d46 12% 20%, transparent 20% 27%, #29283f 27% 36%, transparent 36% 42%, #302c44 42% 52%, transparent 52% 59%, #29283f 59% 68%, transparent 68% 75%, #302c44 75% 88%, transparent 88%),
+          radial-gradient(ellipse at 50% 44%, #f0ad72 0, #c96a64 14%, rgb(148 69 83 / 52%) 27%, transparent 49%),
+          linear-gradient(180deg, #25263d 0%, #60516a 39%, #bd8277 60%, #464052 72%, #272638 100%);
+      }
+      50%, 74.99% {
+        background-image:
+          linear-gradient(180deg, rgb(8 22 35 / 12%) 0 38%, rgb(10 27 38 / 12%) 56%, #101a28 100%),
+          repeating-linear-gradient(90deg, transparent 0 34px, rgb(157 208 202 / 76%) 35px 38px, transparent 39px 68px),
+          linear-gradient(90deg, #1d3448 0 8%, transparent 8% 13%, #264151 13% 25%, transparent 25% 31%, #1d3448 31% 43%, transparent 43% 49%, #274252 49% 62%, transparent 62% 69%, #1d3448 69% 81%, transparent 81% 87%, #274252 87% 96%, transparent 96%),
+          radial-gradient(ellipse at 50% 48%, #bbd3c7 0, #688e9d 15%, rgb(50 100 120 / 48%) 27%, transparent 49%),
+          linear-gradient(180deg, #172b41 0%, #426274 39%, #91a7a1 60%, #344451 72%, #192634 100%);
+      }
+      75%, 100% {
+        background-image:
+          linear-gradient(180deg, rgb(24 15 38 / 12%) 0 38%, rgb(32 19 43 / 12%) 56%, #191828 100%),
+          repeating-linear-gradient(90deg, transparent 0 34px, rgb(223 160 194 / 76%) 35px 38px, transparent 39px 68px),
+          linear-gradient(90deg, #332841 0 9%, transparent 9% 14%, #41314a 14% 25%, transparent 25% 32%, #332841 32% 45%, transparent 45% 51%, #41314a 51% 64%, transparent 64% 70%, #332841 70% 82%, transparent 82% 88%, #41314a 88% 97%, transparent 97%),
+          radial-gradient(ellipse at 50% 47%, #e6b2bb 0, #ac7088 14%, rgb(109 62 91 / 48%) 27%, transparent 49%),
+          linear-gradient(180deg, #30263d 0%, #756078 39%, #ba8796 60%, #4b3b52 72%, #251f32 100%);
+      }
+    }
+
+    @keyframes level-two-crowd {
+      0%, 24.99% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 23px, rgb(255 191 119 / 70%) 24px 27px, transparent 28px 47px),
+          linear-gradient(180deg, #46516a 0 9px, #242c43 9px 100%);
+      }
+      25%, 49.99% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 23px, rgb(255 194 122 / 76%) 24px 27px, transparent 28px 47px),
+          linear-gradient(180deg, #5d4b62 0 9px, #332b42 9px 100%);
+      }
+      50%, 74.99% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 23px, rgb(165 218 218 / 72%) 24px 27px, transparent 28px 47px),
+          linear-gradient(180deg, #426577 0 9px, #243947 9px 100%);
+      }
+      75%, 100% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 23px, rgb(225 177 212 / 72%) 24px 27px, transparent 28px 47px),
+          linear-gradient(180deg, #68506e 0 9px, #382d48 9px 100%);
+      }
+    }
+
+    @keyframes level-two-floor {
+      0%, 24.99% {
+        background:
+          linear-gradient(180deg, rgb(247 166 122 / 35%), transparent 14%),
+          repeating-linear-gradient(90deg, transparent 0 11.8%, rgb(241 155 126 / 44%) 12% 12.25%, transparent 12.45% 24.7%),
+          repeating-linear-gradient(0deg, #34394d 0 2px, #45475a 2px 28px);
+      }
+      25%, 49.99% {
+        background:
+          linear-gradient(180deg, rgb(248 191 139 / 34%), transparent 14%),
+          repeating-linear-gradient(90deg, transparent 0 11.8%, rgb(225 159 131 / 42%) 12% 12.25%, transparent 12.45% 24.7%),
+          repeating-linear-gradient(0deg, #3c3444 0 2px, #514252 2px 28px);
+      }
+      50%, 74.99% {
+        background:
+          linear-gradient(180deg, rgb(154 208 203 / 32%), transparent 14%),
+          repeating-linear-gradient(90deg, transparent 0 11.8%, rgb(140 197 196 / 38%) 12% 12.25%, transparent 12.45% 24.7%),
+          repeating-linear-gradient(0deg, #273845 0 2px, #354a54 2px 28px);
+      }
+      75%, 100% {
+        background:
+          linear-gradient(180deg, rgb(218 176 211 / 30%), transparent 14%),
+          repeating-linear-gradient(90deg, transparent 0 11.8%, rgb(211 162 198 / 40%) 12% 12.25%, transparent 12.45% 24.7%),
+          repeating-linear-gradient(0deg, #3a3047 0 2px, #4a3a53 2px 28px);
+      }
+    }
+
+    body[data-level="3"] .world {
+      background-color: #171522;
+      background-image:
+        linear-gradient(180deg, transparent 0 42%, rgb(15 14 29 / 18%) 62%, #171522 100%),
+        radial-gradient(ellipse at 50% 48%, rgb(226 136 91 / 22%), transparent 48%),
+        linear-gradient(180deg, #30283b 0%, #765363 48%, #ac665e 69%, #242235 100%);
+      animation: level-three-scenes 4s steps(1, end) infinite;
+    }
+
+    body[data-level="3"] .world::before {
+      right: -4%;
+      bottom: 24%;
+      left: -4%;
+      height: 39%;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 9%, rgb(246 178 112 / 54%) 9.2% 9.5%, transparent 9.7% 18%),
+        linear-gradient(180deg, #4a394a 0 10px, #282434 10px 100%);
+      clip-path: polygon(0 45%, 8% 45%, 8% 14%, 17% 14%, 17% 45%, 25% 45%, 25% 0, 36% 0, 36% 45%, 45% 45%, 45% 20%, 55% 20%, 55% 45%, 64% 45%, 64% 8%, 75% 8%, 75% 45%, 84% 45%, 84% 18%, 94% 18%, 94% 45%, 100% 45%, 100% 100%, 0 100%);
+      animation: level-three-structures 4s steps(1, end) infinite;
+      opacity: .88;
+    }
+
+    body[data-level="3"] .world::after {
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 28%;
+      background:
+        linear-gradient(180deg, rgb(255 191 119 / 22%), transparent 13%),
+        repeating-linear-gradient(90deg, transparent 0 15%, rgb(231 158 130 / 25%) 15.1% 15.3%, transparent 15.5% 30%),
+        repeating-linear-gradient(0deg, #292838 0 2px, #383347 2px 30px);
+      clip-path: polygon(0 16%, 100% 16%, 100% 100%, 0 100%);
+      animation: level-three-ground 4s steps(1, end) infinite;
+      opacity: .96;
+    }
+
+    @keyframes level-three-scenes {
+      0%, 24.99% {
+        background-image:
+          linear-gradient(180deg, transparent 0 42%, rgb(15 14 29 / 18%) 62%, #171522 100%),
+          radial-gradient(ellipse at 50% 48%, rgb(226 136 91 / 22%), transparent 48%),
+          linear-gradient(180deg, #30283b 0%, #765363 48%, #ac665e 69%, #242235 100%);
+      }
+      25%, 49.99% {
+        background-image:
+          linear-gradient(180deg, transparent 0 42%, rgb(28 9 17 / 25%) 62%, #17131b 100%),
+          radial-gradient(ellipse at 54% 60%, rgb(255 112 49 / 38%), transparent 47%),
+          linear-gradient(180deg, #282638 0%, #593442 46%, #b95d43 72%, #241b25 100%);
+      }
+      50%, 74.99% {
+        background-image:
+          linear-gradient(180deg, transparent 0 42%, rgb(7 20 24 / 25%) 62%, #101a20 100%),
+          radial-gradient(ellipse at 48% 50%, rgb(78 172 149 / 20%), transparent 46%),
+          linear-gradient(180deg, #192e3a 0%, #315755 47%, #668166 69%, #18252b 100%);
+      }
+      75%, 100% {
+        background-image:
+          linear-gradient(180deg, transparent 0 42%, rgb(14 22 38 / 22%) 62%, #151b29 100%),
+          radial-gradient(ellipse at 50% 50%, rgb(151 199 224 / 25%), transparent 46%),
+          linear-gradient(180deg, #26354d 0%, #667d92 47%, #a5b0b0 69%, #202938 100%);
+      }
+    }
+
+    @keyframes level-three-structures {
+      0%, 24.99% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 9%, rgb(246 178 112 / 54%) 9.2% 9.5%, transparent 9.7% 18%),
+          linear-gradient(180deg, #4a394a 0 10px, #282434 10px 100%);
+        clip-path: polygon(0 45%, 8% 45%, 8% 14%, 17% 14%, 17% 45%, 25% 45%, 25% 0, 36% 0, 36% 45%, 45% 45%, 45% 20%, 55% 20%, 55% 45%, 64% 45%, 64% 8%, 75% 8%, 75% 45%, 84% 45%, 84% 18%, 94% 18%, 94% 45%, 100% 45%, 100% 100%, 0 100%);
+      }
+      25%, 49.99% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 11%, rgb(255 133 65 / 70%) 11.2% 11.8%, transparent 12% 23%),
+          linear-gradient(180deg, #643943 0 10px, #302431 10px 100%);
+        clip-path: polygon(0 57%, 12% 57%, 12% 29%, 21% 29%, 21% 57%, 34% 57%, 34% 12%, 47% 12%, 47% 57%, 59% 57%, 59% 34%, 70% 34%, 70% 57%, 83% 57%, 83% 18%, 94% 18%, 94% 57%, 100% 57%, 100% 100%, 0 100%);
+      }
+      50%, 74.99% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 12%, rgb(104 190 153 / 58%) 12.2% 12.6%, transparent 12.8% 25%),
+          linear-gradient(180deg, #426056 0 10px, #233b3a 10px 100%);
+        clip-path: polygon(0 53%, 10% 53%, 10% 4%, 20% 4%, 20% 53%, 30% 53%, 30% 21%, 41% 21%, 41% 53%, 51% 53%, 51% 0, 63% 0, 63% 53%, 75% 53%, 75% 16%, 87% 16%, 87% 53%, 100% 53%, 100% 100%, 0 100%);
+      }
+      75%, 100% {
+        background:
+          repeating-linear-gradient(90deg, transparent 0 10%, rgb(184 217 238 / 65%) 10.2% 10.6%, transparent 10.8% 20%),
+          linear-gradient(180deg, #52677e 0 10px, #29364b 10px 100%);
+        clip-path: polygon(0 51%, 9% 51%, 9% 0, 19% 0, 19% 51%, 29% 51%, 29% 23%, 40% 23%, 40% 51%, 50% 51%, 50% 7%, 62% 7%, 62% 51%, 74% 51%, 74% 14%, 85% 14%, 85% 51%, 100% 51%, 100% 100%, 0 100%);
+      }
+    }
+
+    @keyframes level-three-ground {
+      0%, 24.99% {
+        background:
+          linear-gradient(180deg, rgb(255 191 119 / 22%), transparent 13%),
+          repeating-linear-gradient(90deg, transparent 0 15%, rgb(231 158 130 / 25%) 15.1% 15.3%, transparent 15.5% 30%),
+          repeating-linear-gradient(0deg, #292838 0 2px, #383347 2px 30px);
+      }
+      25%, 49.99% {
+        background:
+          linear-gradient(180deg, rgb(255 122 67 / 34%), transparent 13%),
+          repeating-linear-gradient(90deg, transparent 0 15%, rgb(255 140 74 / 32%) 15.1% 15.3%, transparent 15.5% 30%),
+          repeating-linear-gradient(0deg, #30252e 0 2px, #49313a 2px 30px);
+      }
+      50%, 74.99% {
+        background:
+          linear-gradient(180deg, rgb(110 205 163 / 24%), transparent 13%),
+          repeating-linear-gradient(90deg, transparent 0 15%, rgb(120 195 157 / 28%) 15.1% 15.3%, transparent 15.5% 30%),
+          repeating-linear-gradient(0deg, #1d2b30 0 2px, #2a3c3a 2px 30px);
+      }
+      75%, 100% {
+        background:
+          linear-gradient(180deg, rgb(183 221 239 / 28%), transparent 13%),
+          repeating-linear-gradient(90deg, transparent 0 15%, rgb(188 222 239 / 32%) 15.1% 15.3%, transparent 15.5% 30%),
+          repeating-linear-gradient(0deg, #252e3d 0 2px, #344256 2px 30px);
+      }
+    }
+
+    body[data-scene="0"] {
+      --scene-base: #64c8f2;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 52%, rgb(30 94 99 / 18%) 100%), radial-gradient(ellipse at 82% 18%, #ffe483 0 5%, transparent 5.3%), linear-gradient(180deg, #64c8f2 0 54%, #a9e7f2 100%);
+      --scene-mid: linear-gradient(180deg, #72d765 0 16px, #43ae55 16px 100%);
+      --scene-mid-shape: polygon(0 60%, 10% 60%, 10% 45%, 22% 45%, 22% 30%, 34% 30%, 34% 46%, 45% 46%, 45% 20%, 58% 20%, 58% 40%, 69% 40%, 69% 27%, 82% 27%, 82% 48%, 100% 48%, 100% 100%, 0 100%);
+      --scene-front: repeating-linear-gradient(90deg, transparent 0 30px, rgb(20 91 47 / 25%) 30px 34px), linear-gradient(180deg, #40b958 0 18px, #247c4a 18px 100%);
+      --scene-front-shape: polygon(0 48%, 12% 48%, 12% 30%, 27% 30%, 27% 48%, 39% 48%, 39% 22%, 53% 22%, 53% 42%, 66% 42%, 66% 18%, 81% 18%, 81% 40%, 100% 40%, 100% 100%, 0 100%);
+      --scene-glow: #ffe483;
+    }
+
+    body[data-scene="1"] {
+      --scene-base: #f0ad72;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 50%, rgb(67 37 37 / 22%) 100%), radial-gradient(ellipse at 50% 24%, #fff0c1 0 7%, transparent 7.4%), linear-gradient(180deg, #efb779 0 53%, #c47b4e 100%);
+      --scene-mid: repeating-linear-gradient(90deg, transparent 0 62px, rgb(80 48 41 / 24%) 63px 67px), linear-gradient(180deg, #c99a5c 0 15px, #8b5b43 15px 100%);
+      --scene-mid-shape: polygon(0 52%, 10% 52%, 10% 35%, 23% 35%, 23% 52%, 33% 52%, 33% 24%, 46% 24%, 46% 43%, 58% 43%, 58% 17%, 71% 17%, 71% 44%, 83% 44%, 83% 28%, 96% 28%, 96% 49%, 100% 49%, 100% 100%, 0 100%);
+      --scene-front: repeating-linear-gradient(90deg, transparent 0 38px, rgb(88 49 37 / 33%) 39px 43px), linear-gradient(180deg, #a96542 0 18px, #704233 18px 100%);
+      --scene-front-shape: polygon(0 49%, 15% 49%, 15% 29%, 30% 29%, 30% 49%, 43% 49%, 43% 22%, 58% 22%, 58% 42%, 74% 42%, 74% 25%, 88% 25%, 88% 44%, 100% 44%, 100% 100%, 0 100%);
+      --scene-glow: #fff0c1;
+    }
+
+    body[data-scene="2"] {
+      --scene-base: #729ac8;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 48%, rgb(20 41 73 / 20%) 100%), radial-gradient(ellipse at 78% 19%, #f7f2dd 0 4%, transparent 4.4%), linear-gradient(180deg, #769fc9 0 52%, #d2e3e7 100%);
+      --scene-mid: repeating-linear-gradient(90deg, transparent 0 48px, rgb(50 83 126 / 25%) 49px 53px), linear-gradient(180deg, #8eb6d1 0 16px, #527baa 16px 100%);
+      --scene-mid-shape: polygon(0 55%, 11% 55%, 11% 28%, 24% 28%, 24% 45%, 37% 45%, 37% 14%, 51% 14%, 51% 38%, 64% 38%, 64% 20%, 77% 20%, 77% 47%, 89% 47%, 89% 30%, 100% 30%, 100% 100%, 0 100%);
+      --scene-front: repeating-linear-gradient(90deg, transparent 0 30px, rgb(31 55 95 / 30%) 30px 34px), linear-gradient(180deg, #5277a4 0 18px, #304a78 18px 100%);
+      --scene-front-shape: polygon(0 50%, 13% 50%, 13% 34%, 27% 34%, 27% 50%, 40% 50%, 40% 24%, 55% 24%, 55% 42%, 69% 42%, 69% 20%, 83% 20%, 83% 44%, 100% 44%, 100% 100%, 0 100%);
+      --scene-glow: #f7f2dd;
+    }
+
+    body[data-scene="3"] {
+      --scene-base: #e58b70;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 54%, rgb(23 26 45 / 24%) 100%), radial-gradient(ellipse at 50% 45%, #ffd18c 0 8%, transparent 39%), linear-gradient(180deg, #343d5e 0%, #e58b70 69%, #3b3447 100%);
+      --scene-mid: repeating-linear-gradient(90deg, transparent 0 32px, rgb(255 194 122 / 70%) 33px 36px, transparent 37px 64px), linear-gradient(180deg, #50546b 0 12px, #292e48 12px 100%);
+      --scene-mid-shape: polygon(0 42%, 8% 42%, 8% 10%, 18% 10%, 18% 42%, 30% 42%, 30% 17%, 42% 17%, 42% 44%, 54% 44%, 54% 3%, 67% 3%, 67% 40%, 79% 40%, 79% 20%, 91% 20%, 91% 45%, 100% 45%, 100% 100%, 0 100%);
+      --scene-front: repeating-linear-gradient(90deg, transparent 0 15%, rgb(241 155 126 / 38%) 15.2% 15.5%, transparent 15.7% 30%), repeating-linear-gradient(0deg, #34394d 0 2px, #45475a 2px 28px);
+      --scene-front-shape: polygon(0 17%, 100% 17%, 100% 100%, 0 100%);
+      --scene-glow: #ffc17a;
+    }
+
+    body[data-scene="4"] {
+      --scene-base: #455e70;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 51%, rgb(13 28 40 / 28%) 100%), radial-gradient(ellipse at 50% 40%, #d7b18b 0 6%, transparent 35%), linear-gradient(180deg, #627d8c 0%, #a9a197 56%, #35434c 100%);
+      --scene-mid: repeating-linear-gradient(90deg, transparent 0 46px, rgb(216 194 153 / 58%) 47px 50px, transparent 51px 90px), linear-gradient(180deg, #7a7467 0 12px, #3c4650 12px 100%);
+      --scene-mid-shape: polygon(0 46%, 12% 46%, 12% 6%, 25% 6%, 25% 43%, 37% 43%, 37% 18%, 49% 18%, 49% 45%, 62% 45%, 62% 0, 76% 0, 76% 42%, 88% 42%, 88% 13%, 100% 13%, 100% 100%, 0 100%);
+      --scene-front: repeating-linear-gradient(90deg, transparent 0 12%, rgb(216 194 153 / 34%) 12.2% 12.5%, transparent 12.7% 25%), repeating-linear-gradient(0deg, #35424a 0 2px, #4b5659 2px 28px);
+      --scene-front-shape: polygon(0 17%, 100% 17%, 100% 100%, 0 100%);
+      --scene-glow: #e8c99a;
+    }
+
+    body[data-scene="5"] {
+      --scene-base: #544b74;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 53%, rgb(24 20 47 / 27%) 100%), radial-gradient(ellipse at 58% 38%, #e1a8ca 0 6%, transparent 38%), linear-gradient(180deg, #4e557a 0%, #b2789c 59%, #3b304d 100%);
+      --scene-mid: repeating-linear-gradient(90deg, transparent 0 28px, rgb(246 174 207 / 64%) 29px 32px, transparent 33px 58px), linear-gradient(180deg, #715b7d 0 12px, #392f50 12px 100%);
+      --scene-mid-shape: polygon(0 44%, 9% 44%, 9% 14%, 21% 14%, 21% 44%, 34% 44%, 34% 3%, 48% 3%, 48% 42%, 61% 42%, 61% 18%, 74% 18%, 74% 44%, 86% 44%, 86% 7%, 100% 7%, 100% 100%, 0 100%);
+      --scene-front: repeating-linear-gradient(90deg, transparent 0 11%, rgb(216 164 203 / 33%) 11.2% 11.5%, transparent 11.7% 23%), repeating-linear-gradient(0deg, #352d49 0 2px, #4b3b58 2px 28px);
+      --scene-front-shape: polygon(0 17%, 100% 17%, 100% 100%, 0 100%);
+      --scene-glow: #e1a8ca;
+    }
+
+    body[data-scene="6"] {
+      --scene-base: #30283b;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 44%, rgb(15 14 29 / 25%) 62%, #171522 100%), radial-gradient(ellipse at 50% 46%, rgb(226 136 91 / 28%), transparent 48%), linear-gradient(180deg, #30283b 0%, #765363 48%, #ac665e 69%, #242235 100%);
+      --scene-mid: repeating-linear-gradient(90deg, transparent 0 44px, rgb(246 178 112 / 54%) 45px 48px, transparent 49px 88px), linear-gradient(180deg, #4a394a 0 10px, #282434 10px 100%);
+      --scene-mid-shape: polygon(0 45%, 8% 45%, 8% 14%, 17% 14%, 17% 45%, 25% 45%, 25% 0, 36% 0, 36% 45%, 45% 45%, 45% 20%, 55% 20%, 55% 45%, 64% 45%, 64% 8%, 75% 8%, 75% 45%, 84% 45%, 84% 18%, 94% 18%, 94% 45%, 100% 45%, 100% 100%, 0 100%);
+      --scene-front: linear-gradient(180deg, rgb(255 191 119 / 22%), transparent 13%), repeating-linear-gradient(90deg, transparent 0 15%, rgb(231 158 130 / 25%) 15.1% 15.3%, transparent 15.5% 30%), repeating-linear-gradient(0deg, #292838 0 2px, #383347 2px 30px);
+      --scene-front-shape: polygon(0 16%, 100% 16%, 100% 100%, 0 100%);
+      --scene-glow: #e2885b;
+    }
+
+    body[data-scene="7"] {
+      --scene-base: #39232b;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 44%, rgb(28 9 17 / 29%) 62%, #17131b 100%), radial-gradient(ellipse at 54% 61%, rgb(255 112 49 / 44%), transparent 47%), linear-gradient(180deg, #282638 0%, #593442 46%, #b95d43 72%, #241b25 100%);
+      --scene-mid: repeating-linear-gradient(90deg, transparent 0 52px, rgb(255 133 65 / 68%) 53px 57px, transparent 58px 102px), linear-gradient(180deg, #643943 0 10px, #302431 10px 100%);
+      --scene-mid-shape: polygon(0 57%, 12% 57%, 12% 29%, 21% 29%, 21% 57%, 34% 57%, 34% 12%, 47% 12%, 47% 57%, 59% 57%, 59% 34%, 70% 34%, 70% 57%, 83% 57%, 83% 18%, 94% 18%, 94% 57%, 100% 57%, 100% 100%, 0 100%);
+      --scene-front: linear-gradient(180deg, rgb(255 122 67 / 34%), transparent 13%), repeating-linear-gradient(90deg, transparent 0 15%, rgb(255 140 74 / 32%) 15.1% 15.3%, transparent 15.5% 30%), repeating-linear-gradient(0deg, #30252e 0 2px, #49313a 2px 30px);
+      --scene-front-shape: polygon(0 16%, 100% 16%, 100% 100%, 0 100%);
+      --scene-glow: #ff8248;
+    }
+
+    body[data-scene="8"] {
+      --scene-base: #192e3a;
+      --scene-backdrop: linear-gradient(180deg, transparent 0 44%, rgb(7 20 24 / 27%) 62%, #101a20 100%), radial-gradient(ellipse at 48% 50%, rgb(78 172 149 / 25%), transparent 46%), linear-gradient(180deg, #192e3a 0%, #315755 47%, #668166 69%, #18252b 100%);
+      --scene-mid: repeating-linear-gradient(90deg, transparent 0 58px, rgb(104 190 153 / 58%) 59px 62px, transparent 63px 112px), linear-gradient(180deg, #426056 0 10px, #233b3a 10px 100%);
+      --scene-mid-shape: polygon(0 53%, 10% 53%, 10% 4%, 20% 4%, 20% 53%, 30% 53%, 30% 21%, 41% 21%, 41% 53%, 51% 53%, 51% 0, 63% 0, 63% 53%, 75% 53%, 75% 16%, 87% 16%, 87% 53%, 100% 53%, 100% 100%, 0 100%);
+      --scene-front: linear-gradient(180deg, rgb(110 205 163 / 24%), transparent 13%), repeating-linear-gradient(90deg, transparent 0 15%, rgb(120 195 157 / 28%) 15.1% 15.3%, transparent 15.5% 30%), repeating-linear-gradient(0deg, #1d2b30 0 2px, #2a3c3a 2px 30px);
+      --scene-front-shape: polygon(0 16%, 100% 16%, 100% 100%, 0 100%);
+      --scene-glow: #74c6a2;
+    }
+
+    body[data-level] .world {
+      background-color: var(--scene-base);
+      background-image: var(--scene-backdrop);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      animation: none;
+      transition: none;
+    }
+
+    body[data-level] .world::before {
+      right: -4%;
+      bottom: 23%;
+      left: -4%;
+      height: 36%;
+      background: var(--scene-mid);
+      clip-path: var(--scene-mid-shape);
+      filter: none;
+      animation: none;
+      opacity: .9;
+    }
+
+    body[data-level] .world::after {
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 29%;
+      background: var(--scene-front);
+      clip-path: var(--scene-front-shape);
+      animation: none;
+      opacity: .98;
+    }
+
+    body[data-level] .ambient-light {
+      top: 12%;
+      left: 50%;
+      width: min(58vw, 680px);
+      height: 240px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--scene-glow) 20%, transparent);
+      filter: blur(80px);
+      transform: translateX(-50%);
+      animation: none;
+    }
+
+    .ambient-light {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      width: min(60vw, 760px);
+      height: 360px;
+      border-radius: 50%;
+      background: rgb(255 218 150 / 10%);
+      filter: blur(80px);
+      transform: translateX(-50%);
+      transition: background 700ms ease;
+    }
+
+    body[data-level="2"] .ambient-light {
+      top: 24%;
+      width: min(58vw, 680px);
+      height: 240px;
+      background: rgb(241 124 117 / 22%);
+    }
+    body[data-level="3"] .ambient-light { background: rgb(250 110 60 / 16%); }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 20px 24px;
+    }
+
+    header {
+      width: min(100%, 940px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .brand {
+      font-size: .79rem;
+      font-weight: 750;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+      color: #ece8dc;
+    }
+
+    .level-label {
+      padding: 8px 13px;
+      border: 1px solid rgb(255 255 255 / 18%);
+      border-radius: 999px;
+      background: rgb(13 17 26 / 40%);
+      color: #e2e1dc;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      backdrop-filter: blur(12px);
+    }
+
+    main {
+      width: min(100%, 860px);
+      margin: auto 0;
+    }
+
+    .arcade-cabinet {
+      position: relative;
+      width: min(100%, 820px);
+      padding: 48px 16px 76px;
+      border: 2px solid #6b4449;
+      border-radius: 30px 30px 48px 48px;
+      background: linear-gradient(90deg, #9e343d 0, #571f2b 4%, #211d2a 12%, #211d2a 88%, #571f2b 96%, #9e343d 100%);
+      box-shadow: inset 0 0 0 5px rgb(255 255 255 / 5%), 0 24px 70px rgb(0 0 0 / 55%), 0 0 36px rgb(255 93 86 / 15%);
+    }
+
+    .arcade-marquee {
+      position: absolute;
+      top: 13px;
+      right: 24px;
+      left: 24px;
+      color: #ffe7b0;
+      font-size: .73rem;
+      font-weight: 850;
+      letter-spacing: .3em;
+      text-align: center;
+      text-shadow: 0 0 12px rgb(255 161 104 / 75%);
+    }
+
+    .arcade-control-deck {
+      position: absolute;
+      right: 32px;
+      bottom: 18px;
+      left: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      height: 38px;
+    }
+
+    .arcade-joystick {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      margin-right: auto;
+      border-radius: 50%;
+      background: #e4c9a0;
+      box-shadow: 0 5px 0 #59404a, 0 0 12px rgb(228 201 160 / 35%);
+    }
+
+    .arcade-joystick::before {
+      position: absolute;
+      bottom: 10px;
+      left: 8px;
+      width: 5px;
+      height: 17px;
+      border-radius: 4px;
+      background: #aab8ca;
+      content: "";
+    }
+
+    .arcade-button {
+      width: 17px;
+      height: 17px;
+      border: 2px solid rgb(255 255 255 / 40%);
+      border-radius: 50%;
+      box-shadow: inset 0 2px 3px rgb(255 255 255 / 35%), 0 3px 0 #482d3b;
+    }
+
+    .arcade-button.red { background: #d34b52; }
+    .arcade-button.gold { background: #e4b54e; }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid rgb(255 255 255 / 17%);
+      border-radius: 22px;
+      background: var(--glass);
+      box-shadow: 0 28px 90px rgb(0 0 0 / 40%);
+      backdrop-filter: blur(20px);
+    }
+
+    .card-content { padding: clamp(24px, 6vw, 52px); }
+
+    .eyebrow {
+      margin: 0 0 13px;
+      color: var(--accent);
+      font-size: .75rem;
+      font-weight: 750;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      max-width: 620px;
+      margin-bottom: 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.4rem, 8vw, 5rem);
+      font-weight: 500;
+      letter-spacing: -.055em;
+      line-height: .98;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.7rem, 5vw, 2.45rem);
+      font-weight: 500;
+      letter-spacing: -.03em;
+    }
+
+    .intro, .muted { color: var(--muted); line-height: 1.65; }
+    .intro { max-width: 540px; margin-bottom: 30px; font-size: 1.04rem; }
+
+    .name-form { display: flex; flex-wrap: wrap; gap: 11px; }
+
+    .name-form input {
+      min-width: 180px;
+      flex: 1;
+      padding: 14px 16px;
+      border: 1px solid rgb(255 255 255 / 20%);
+      border-radius: 10px;
+      outline: none;
+      background: rgb(0 0 0 / 18%);
+      color: #fff;
+    }
+
+    .name-form input:focus, button:focus-visible {
+      outline: 3px solid rgb(218 233 184 / 65%);
+      outline-offset: 3px;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 19px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #172019;
+      cursor: pointer;
+      font-weight: 750;
+      transition: transform 160ms ease, filter 160ms ease, background 160ms ease;
+    }
+
+    .button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .button:active { transform: translateY(0); }
+
+    .button.secondary {
+      border-color: rgb(255 255 255 / 20%);
+      background: rgb(255 255 255 / 7%);
+      color: #fff;
+    }
+
+    .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .rules { margin-top: 27px; color: #c6c8cb; font-size: .87rem; line-height: 1.8; }
+    .rules strong { color: #f0eee7; }
+    .rules-list {
+      display: grid;
+      gap: 12px;
+      margin: 22px 0 0;
+      padding-left: 22px;
+      color: #d3d1ca;
+      line-height: 1.65;
+    }
+
+    .rules-list strong { color: #f0eee7; }
+
+    .progress-track {
+      height: 4px;
+      background: rgb(255 255 255 / 12%);
+    }
+
+    .progress {
+      width: 0;
+      height: 100%;
+      background: var(--accent);
+      transition: width 350ms ease, background 350ms ease;
+    }
+
+    .mini-game {
+      padding: 18px clamp(20px, 5vw, 42px) 16px;
+      border-bottom: 1px solid rgb(255 255 255 / 12%);
+      background: linear-gradient(110deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 1%));
+    }
+
+    .mini-game-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .mini-game-title {
+      margin: 0;
+      color: #f0eee7;
+      font-size: .82rem;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .mini-game-status {
+      margin: 0;
+      color: var(--muted);
+      font-size: .78rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mini-game-info {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .dice-indicator {
+      display: flex;
+      min-width: 76px;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .dice-face {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+      padding: 5px;
+      border: 1px solid #d5bd85;
+      border-radius: 8px;
+      background: #fff5dc;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+    }
+
+    .die-pip {
+      width: 5px;
+      height: 5px;
+      align-self: center;
+      justify-self: center;
+      border-radius: 50%;
+      background: #342d26;
+      opacity: 0;
+    }
+
+    .dice-face[data-value="1"] .die-pip:nth-child(5),
+    .dice-face[data-value="2"] .die-pip:nth-child(1),
+    .dice-face[data-value="2"] .die-pip:nth-child(9),
+    .dice-face[data-value="3"] .die-pip:nth-child(1),
+    .dice-face[data-value="3"] .die-pip:nth-child(5),
+    .dice-face[data-value="3"] .die-pip:nth-child(9),
+    .dice-face[data-value="4"] .die-pip:nth-child(1),
+    .dice-face[data-value="4"] .die-pip:nth-child(3),
+    .dice-face[data-value="4"] .die-pip:nth-child(7),
+    .dice-face[data-value="4"] .die-pip:nth-child(9),
+    .dice-face[data-value="5"] .die-pip:nth-child(1),
+    .dice-face[data-value="5"] .die-pip:nth-child(3),
+    .dice-face[data-value="5"] .die-pip:nth-child(5),
+    .dice-face[data-value="5"] .die-pip:nth-child(7),
+    .dice-face[data-value="5"] .die-pip:nth-child(9),
+    .dice-face[data-value="6"] .die-pip:nth-child(1),
+    .dice-face[data-value="6"] .die-pip:nth-child(3),
+    .dice-face[data-value="6"] .die-pip:nth-child(4),
+    .dice-face[data-value="6"] .die-pip:nth-child(6),
+    .dice-face[data-value="6"] .die-pip:nth-child(7),
+    .dice-face[data-value="6"] .die-pip:nth-child(9) {
+      opacity: 1;
+    }
+
+    .dice-face.rolling { animation: dice-roll 180ms ease-in-out infinite alternate; }
+
+    @keyframes dice-roll {
+      from { transform: rotate(-12deg) translateY(-2px); }
+      to { transform: rotate(12deg) translateY(2px); }
+    }
+
+    .dice-move {
+      color: #f0eee7;
+      font-size: .78rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 520px) {
+      .mini-game-heading { align-items: flex-start; }
+      .mini-game-info { flex-direction: column-reverse; align-items: flex-end; gap: 5px; }
+      .mini-game-status { font-size: .68rem; text-align: right; }
+    }
+
+    .snakes-board {
+      position: relative;
+      width: min(100%, 440px);
+      aspect-ratio: 1;
+      margin: 12px auto 0;
+      overflow: hidden;
+      border: 3px solid #d5bd85;
+      border-radius: 9px;
+      background: #d7c58e;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 30%), inset 0 0 0 2px rgb(73 52 34 / 35%);
+      isolation: isolate;
+    }
+
+    .board-cells {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      grid-template-rows: repeat(10, minmax(0, 1fr));
+    }
+
+    .board-cell {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 2px;
+      border: 1px solid rgb(75 60 41 / 28%);
+      color: #3e3527;
+      font-size: clamp(.42rem, 1.65vw, .68rem);
+      font-weight: 750;
+      line-height: 1;
+      transition: background-color 200ms ease;
+    }
+
+    .board-cell.tone-a { background: #ead9a6; }
+    .board-cell.tone-b { background: #b7c58c; }
+    .board-cell.ladder-cell { background-color: #b5cda0; }
+    .board-cell.snake-cell { background-color: #d3a28a; }
+    .board-cell.start-cell { background-color: #f0df87; }
+    .board-cell.finish-cell { background-color: #f4c968; }
+    .board-cell.current-cell { box-shadow: inset 0 0 0 2px #fff8cc; }
+
+    .board-art {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .board-ladder-rail {
+      stroke: #704323;
+      stroke-width: .095;
+      stroke-linecap: round;
+    }
+
+    .board-ladder-rung {
+      stroke: #f0c77b;
+      stroke-width: .075;
+      stroke-linecap: round;
+    }
+
+    .board-snake-body {
+      fill: none;
+      stroke: #a9433e;
+      stroke-width: .17;
+      stroke-linecap: round;
+    }
+
+    .board-snake-head {
+      fill: #863338;
+      stroke: #f0c77b;
+      stroke-width: .045;
+    }
+
+    .board-snake-eye {
+      fill: #fff3d2;
+    }
+
+    .board-player {
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      width: clamp(22px, 6vw, 30px);
+      aspect-ratio: 1;
+      place-items: center;
+      border: 2px solid #fff3bb;
+      border-radius: 50%;
+      background: #593ba2;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 65%);
+      font-size: clamp(13px, 3.5vw, 18px);
+      line-height: 1;
+      transform: translate(-50%, -50%);
+      transition: left 380ms cubic-bezier(.2, .8, .3, 1.2), top 380ms cubic-bezier(.2, .8, .3, 1.2);
+    }
+
+    .question-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 27px;
+      color: #e3e1dc;
+      font-size: .87rem;
+    }
+
+    .lives { color: #ffd2c9; font-size: 1.15rem; letter-spacing: .14em; }
+    .score { color: #ece5c5; font-variant-numeric: tabular-nums; }
+    .question { margin: 12px 0 25px; font-size: clamp(1.2rem, 3vw, 1.55rem); line-height: 1.48; }
+
+    .answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+
+    .answer {
+      min-height: 62px;
+      padding: 14px 16px;
+      border: 1px solid rgb(255 255 255 / 15%);
+      border-radius: 12px;
+      background: rgb(255 255 255 / 5%);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+    }
+
+    .answer:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: rgb(225 236 199 / 65%);
+      background: rgb(225 236 199 / 10%);
+    }
+
+    .answer:disabled { cursor: default; opacity: .82; }
+    .answer.correct { border-color: #9dc98e; background: rgb(65 128 73 / 35%); }
+    .answer.incorrect { border-color: #da837d; background: rgb(139 54 54 / 38%); }
+
+    .answer-key {
+      display: inline-grid;
+      width: 27px;
+      height: 27px;
+      place-items: center;
+      margin-right: 8px;
+      border: 1px solid rgb(255 255 255 / 23%);
+      border-radius: 7px;
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 750;
+      vertical-align: middle;
+    }
+
+    .feedback { min-height: 28px; margin: 17px 0 0; color: #e4e0d6; line-height: 1.5; }
+    .feedback.success { color: #b7dfa9; }
+    .feedback.error { color: #ffb1a7; }
+    .hidden { display: none !important; }
+
+    .fight-announcer {
+      position: fixed;
+      z-index: 5;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    .fight-announcer-panel {
+      padding: 16px clamp(28px, 8vw, 88px);
+      border: 5px solid #fff2c5;
+      background: #ad333d;
+      box-shadow: 0 0 0 5px #20233a, 0 12px 0 rgb(0 0 0 / 35%), 0 0 38px rgb(255 184 112 / 55%);
+      color: #fff8df;
+      font-family: Impact, "Arial Black", sans-serif;
+      font-size: clamp(2.6rem, 11vw, 6.5rem);
+      font-style: italic;
+      font-weight: 900;
+      letter-spacing: .08em;
+      line-height: 1;
+      text-align: center;
+      text-shadow: 4px 4px 0 #492b3c;
+      transform: rotate(-4deg) scale(.7);
+      animation: fight-banner-in 220ms cubic-bezier(.2, 1.5, .5, 1) forwards;
+    }
+
+    .fight-announcer.win .fight-announcer-panel {
+      border-color: #e6ffc4;
+      background: #23885e;
+      box-shadow: 0 0 0 5px #20233a, 0 12px 0 rgb(0 0 0 / 35%), 0 0 38px rgb(148 255 185 / 60%);
+      text-shadow: 4px 4px 0 #175540;
+    }
+
+    .fight-announcer.lose .fight-announcer-panel {
+      border-color: #ffe3b4;
+      background: #a83246;
+    }
+
+    .fight-announcer.finisher .fight-announcer-panel {
+      padding-right: clamp(24px, 5vw, 64px);
+      padding-left: clamp(24px, 5vw, 64px);
+      border-color: #f5ce79;
+      background: linear-gradient(135deg, #281b25, #873c37 52%, #321b28);
+      box-shadow: 0 0 0 5px #171522, 0 12px 0 rgb(0 0 0 / 40%), 0 0 42px rgb(240 128 74 / 60%);
+      color: #ffe7b0;
+      font-size: clamp(2.1rem, 8vw, 5rem);
+      letter-spacing: .045em;
+      text-shadow: 3px 3px 0 #572d35;
+    }
+
+    @keyframes fight-banner-in {
+      to { transform: rotate(-4deg) scale(1); }
+    }
+
+    .table-wrap { overflow-x: auto; margin-top: 24px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px 10px; border-bottom: 1px solid rgb(255 255 255 / 12%); }
+    th { color: var(--accent); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+    td { color: #e9e7e1; }
+
+    .message { min-height: 24px; margin: 12px 0 0; color: #ffb1a7; font-size: .88rem; }
+
+    footer {
+      width: min(100%, 940px);
+      margin-top: 28px;
+      color: rgb(242 240 233 / 60%);
+      font-size: .75rem;
+      letter-spacing: .05em;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      .layout { padding: 20px 14px; }
+      header { margin-bottom: 20px; }
+      .answers { grid-template-columns: 1fr; }
+      .question-top { align-items: flex-start; flex-direction: column; }
+      .name-form .button { width: 100%; }
+      .card { border-radius: 17px; }
+      .arcade-cabinet { padding: 43px 10px 68px; border-radius: 23px 23px 34px 34px; }
+      .arcade-marquee { top: 12px; }
+      .arcade-control-deck { right: 24px; bottom: 14px; left: 24px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+      body[data-level="1"] .world,
+      body[data-level="1"] .world::before,
+      body[data-level="1"] .world::after,
+      body[data-level="1"] .ambient-light,
+      body[data-level="2"] .world,
+      body[data-level="2"] .world::before,
+      body[data-level="2"] .world::after,
+      body[data-level="3"] .world,
+      body[data-level="3"] .world::before,
+      body[data-level="3"] .world::after { animation: none !important; }
+    }
+  </style>
+</head>
+<body data-level="1" data-scene="0">
+  <div class="world" aria-hidden="true"><div class="ambient-light"></div></div>
+  <div class="layout">
+    <header>
+      <div class="brand">El Desafío</div>
+      <div id="level-label" class="level-label">Pradera de los comienzos</div>
+    </header>
+
+    <main>
+      <div id="home-cabinet" class="arcade-cabinet">
+        <div class="arcade-marquee" aria-hidden="true">ARCADE · EL DESAFÍO</div>
+        <section id="home-screen" class="card">
+          <div class="card-content">
+            <p class="eyebrow">Una aventura de conocimiento</p>
+            <h1>El camino empieza aquí.</h1>
+            <p class="intro">Cruza tres mundos, supera cada desafío y demuestra cuánto sabes de programación en C.</p>
+            <div class="button-row">
+              <button id="show-rules" class="button secondary" type="button">Leer reglas del juego</button>
+            </div>
+            <form id="start-form" class="name-form">
+              <label class="hidden" for="player-name">Nombre del jugador</label>
+              <input id="player-name" name="player-name" maxlength="49" autocomplete="given-name" placeholder="Escribe tu nombre" required>
+              <button id="start-button" class="button" type="submit" disabled>Cargando juego...</button>
+            </form>
+            <p id="home-message" class="message" role="status"></p>
+            <div class="rules">
+              <strong>3 mundos</strong> · 10 preguntas por mundo · 3 vidas<br>
+              Cada respuesta correcta suma de 10 a 30 puntos. Lanza el dado para avanzar o retroceder.
+            </div>
+            <div class="button-row">
+              <button id="show-scores" class="button secondary" type="button">Ver mejores puntajes</button>
+            </div>
+          </div>
+        </section>
+        <div class="arcade-control-deck" aria-hidden="true">
+          <span class="arcade-joystick"></span>
+          <span class="arcade-button red"></span>
+          <span class="arcade-button gold"></span>
+        </div>
+      </div>
+
+      <section id="rules-screen" class="card hidden">
+        <div class="card-content">
+          <p class="eyebrow">Antes de comenzar</p>
+          <h2>Reglas del juego</h2>
+          <ol class="rules-list">
+            <li>La aventura tiene <strong>3 niveles con 10 preguntas cada uno</strong>. Escribe tu nombre y pulsa “Comenzar aventura”.</li>
+            <li>Elige una de las cuatro opciones para responder cada pregunta. Empiezas con <strong>3 vidas</strong>; cada respuesta incorrecta resta una vida y al quedarte sin vidas termina la partida.</li>
+            <li>Las respuestas correctas suman puntos según el nivel: <strong>10, 20 o 30 puntos</strong>.</li>
+            <li>Después de cada respuesta se lanza un dado. Si aciertas, avanzas de <strong>1 a 6 casillas</strong>; si fallas, retrocedes esa cantidad.</li>
+            <li>Al caer en una escalera subes y al caer en una serpiente bajas. La meta del tablero está en la casilla <strong>100</strong>; al alcanzarla, el dado deja de lanzarse, pero puedes continuar contestando el cuestionario.</li>
+            <li>Completa las 30 preguntas con al menos una vida para ganar. Los mejores puntajes muestran solo las partidas ganadas.</li>
+          </ol>
+          <div class="button-row">
+            <button id="rules-back" class="button" type="button">Volver al inicio</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="game-screen" class="card hidden" aria-live="polite">
+        <div class="progress-track"><div id="progress" class="progress"></div></div>
+        <div class="mini-game">
+          <div class="mini-game-heading">
+            <h2 class="mini-game-title">Serpientes y escaleras</h2>
+            <div class="mini-game-info">
+              <p id="mini-game-status" class="mini-game-status" role="status" aria-live="polite">Preguntas: 0/30 · Casilla: 1/100</p>
+              <span id="dice-indicator" class="dice-indicator" role="img" aria-label="Dado sin lanzar">
+                <span id="dice-face" class="dice-face" aria-hidden="true">
+                  <span class="die-pip"></span><span class="die-pip"></span><span class="die-pip"></span>
+                  <span class="die-pip"></span><span class="die-pip"></span><span class="die-pip"></span>
+                  <span class="die-pip"></span><span class="die-pip"></span><span class="die-pip"></span>
+                </span>
+                <span id="dice-move" class="dice-move" aria-hidden="true">—</span>
+              </span>
+            </div>
+          </div>
+          <div id="snakes-board" class="snakes-board" role="img" aria-label="Tablero de serpientes y escaleras. Casilla 1 de 100">
+            <div id="board-cells" class="board-cells" aria-hidden="true"></div>
+            <svg id="board-art" class="board-art" viewBox="0 0 10 10" aria-hidden="true"></svg>
+            <span id="board-player" class="board-player" aria-hidden="true">●</span>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="question-top">
+            <span id="question-count"></span>
+            <span id="lives" class="lives" aria-label="Vidas restantes"></span>
+            <span id="score" class="score"></span>
+          </div>
+          <p id="level-eyebrow" class="eyebrow"></p>
+          <h2 id="question" class="question"></h2>
+          <div id="answers" class="answers"></div>
+          <p id="feedback" class="feedback" role="status" aria-live="assertive"></p>
+          <div class="button-row">
+            <button id="next-question" class="button hidden" type="button">Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="fight-announcer" class="fight-announcer hidden" role="status" aria-live="assertive" aria-atomic="true">
+        <span id="fight-announcer-label" class="fight-announcer-panel"></span>
+      </div>
+
+      <section id="result-screen" class="card hidden">
+        <div class="card-content">
+          <p id="result-eyebrow" class="eyebrow">Aventura completada</p>
+          <h2 id="result-title"></h2>
+          <p id="result-summary" class="intro"></p>
+          <p id="result-message" class="message" role="status"></p>
+          <div class="button-row">
+            <button id="play-again" class="button" type="button">Jugar otra vez</button>
+            <button id="result-scores" class="button secondary" type="button">Ver puntajes</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="scores-screen" class="card hidden">
+        <div class="card-content">
+          <p class="eyebrow">Salón de la fama</p>
+          <h2>Mejores puntajes</h2>
+          <p id="scores-empty" class="muted hidden">Todavía no hay puntajes guardados. ¡Sé el primero!</p>
+          <div id="scores-table-wrap" class="table-wrap hidden">
+            <table>
+              <thead><tr><th>#</th><th>Jugador</th><th>Puntos</th><th>Resultado</th></tr></thead>
+              <tbody id="scores-list"></tbody>
+            </table>
+          </div>
+          <p id="scores-message" class="message" role="status"></p>
+          <div class="button-row">
+            <button id="scores-back" class="button secondary" type="button">Volver</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>Una aventura original de preguntas · Los puntajes se guardan en este navegador y en el servidor local</footer>
+  </div>
+
+  <script>
+    var gameAssetVersion = Date.now();
+    window.gameWasmReady = false;
+    window.gameWasmFailed = false;
+    var Module = {
+      locateFile(path, prefix) {
+        return `${prefix}${path}?v=${gameAssetVersion}`;
+      },
+      onRuntimeInitialized() {
+        window.gameWasmReady = true;
+        window.dispatchEvent(new Event("wasm-ready"));
+      },
+      onAbort(reason) {
+        console.error("No se pudo iniciar el juego WebAssembly.", reason);
+        window.gameWasmFailed = true;
+        window.dispatchEvent(new Event("wasm-error"));
+      }
+    };
+    var gameScript = document.createElement("script");
+    gameScript.src = `juego_preguntas.js?v=${gameAssetVersion}`;
+    gameScript.onerror = () => {
+      window.gameWasmFailed = true;
+      window.dispatchEvent(new Event("wasm-error"));
+    };
+    document.head.append(gameScript);
+  </script>
+  <script>
+    "use strict";
+    const worlds = {
+      1: { label: "Pradera de los comienzos", topic: "Fundamentos de C" },
+      2: { label: "Cavernas de cristal", topic: "Condiciones, arreglos y ciclos" },
+      3: { label: "Fortaleza de brasas", topic: "Punteros y archivos" }
+    };
+    const storageKey = "el-desafio-puntajes-v1";
+    const letters = ["A", "B", "C", "D"];
+    const screens = ["home-screen", "rules-screen", "game-screen", "result-screen", "scores-screen"];
+    const boardLadders = [[5, 16], [23, 28], [42, 59], [64, 78], [71, 91], [85, 96]];
+    const boardSnakes = [[32, 14], [50, 37], [72, 58], [89, 68], [95, 75], [98, 80]];
+    const diceFaces = [1, 2, 3, 4, 5, 6];
+    let boardCell = 1;
+    let answeredQuestions = 0;
+    let boardCellElements = [];
+    let diceInterval = 0;
+    let diceTimeout = 0;
+    let player = "";
+    let lastScreen = "home-screen";
+    let gameApi = null;
+    let gameFinalizing = false;
+
+    const byId = (id) => document.getElementById(id);
+
+    function boardCoordinates(number) {
+      const row = Math.floor((number - 1) / 10);
+      const offset = (number - 1) % 10;
+      return {
+        x: row % 2 === 0 ? offset + 0.5 : 9.5 - offset,
+        y: 9.5 - row
+      };
+    }
+
+    function createSvgElement(name, attributes) {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
+      return element;
+    }
+
+    function drawBoardLadder(start, end) {
+      const from = boardCoordinates(start);
+      const to = boardCoordinates(end);
+      const length = Math.hypot(to.x - from.x, to.y - from.y);
+      const offsetX = -(to.y - from.y) / length * 0.12;
+      const offsetY = (to.x - from.x) / length * 0.12;
+      const art = byId("board-art");
+
+      [-1, 1].forEach((side) => {
+        art.append(createSvgElement("line", {
+          x1: from.x + offsetX * side, y1: from.y + offsetY * side,
+          x2: to.x + offsetX * side, y2: to.y + offsetY * side,
+          class: "board-ladder-rail"
+        }));
+      });
+
+      for (let step = 1; step < 7; step++) {
+        const progress = step / 7;
+        const x = from.x + (to.x - from.x) * progress;
+        const y = from.y + (to.y - from.y) * progress;
+        art.append(createSvgElement("line", {
+          x1: x - offsetX, y1: y - offsetY,
+          x2: x + offsetX, y2: y + offsetY,
+          class: "board-ladder-rung"
+        }));
+      }
+    }
+
+    function drawBoardSnake(start, end, index) {
+      const from = boardCoordinates(start);
+      const to = boardCoordinates(end);
+      const middleX = (from.x + to.x) / 2 + (index % 2 === 0 ? 0.35 : -0.35);
+      const middleY = (from.y + to.y) / 2;
+      const art = byId("board-art");
+
+      art.append(createSvgElement("path", {
+        d: `M ${from.x} ${from.y} Q ${middleX} ${middleY} ${to.x} ${to.y}`,
+        class: "board-snake-body"
+      }));
+      art.append(createSvgElement("circle", {
+        cx: from.x, cy: from.y, r: 0.19, class: "board-snake-head"
+      }));
+      art.append(createSvgElement("circle", {
+        cx: from.x - 0.055, cy: from.y - 0.045, r: 0.025, class: "board-snake-eye"
+      }));
+      art.append(createSvgElement("circle", {
+        cx: from.x + 0.055, cy: from.y - 0.045, r: 0.025, class: "board-snake-eye"
+      }));
+    }
+
+    function initializeSnakesBoard() {
+      const cells = byId("board-cells");
+      boardCellElements = new Array(101);
+      const ladderCells = new Set(boardLadders.flat());
+      const snakeCells = new Set(boardSnakes.flat());
+
+      for (let displayRow = 0; displayRow < 10; displayRow++) {
+        const boardRow = 9 - displayRow;
+        for (let column = 0; column < 10; column++) {
+          const number = boardRow * 10 + (boardRow % 2 === 0 ? column + 1 : 10 - column);
+          const cell = document.createElement("span");
+          cell.className = `board-cell ${(boardRow + column) % 2 === 0 ? "tone-a" : "tone-b"}`;
+          if (ladderCells.has(number)) cell.classList.add("ladder-cell");
+          if (snakeCells.has(number)) cell.classList.add("snake-cell");
+          if (number === 1) cell.classList.add("start-cell");
+          if (number === 100) cell.classList.add("finish-cell");
+          cell.textContent = String(number);
+          cells.append(cell);
+          boardCellElements[number] = cell;
+        }
+      }
+
+      boardLadders.forEach(([start, end]) => drawBoardLadder(start, end));
+      boardSnakes.forEach(([start, end], index) => drawBoardSnake(start, end, index));
+      updateSnakesBoard(0, 30);
+    }
+
+    function updateSnakesBoard(answered, totalQuestions, eventText = "") {
+      const playerToken = byId("board-player");
+      const position = boardCoordinates(boardCell);
+      playerToken.style.left = `${position.x * 10}%`;
+      playerToken.style.top = `${position.y * 10}%`;
+      boardCellElements.forEach((cell) => cell.classList.remove("current-cell"));
+      boardCellElements[boardCell].classList.add("current-cell");
+
+      const status = eventText
+        ? `${eventText} · ${answered}/${totalQuestions} preguntas · casilla ${boardCell}/100`
+        : `Preguntas: ${answered}/${totalQuestions} · Casilla: ${boardCell}/100`;
+      byId("mini-game-status").textContent = status;
+      byId("snakes-board").setAttribute("aria-label", `Tablero de serpientes y escaleras. ${answered} de ${totalQuestions} preguntas respondidas. Casilla ${boardCell} de 100.`);
+    }
+
+    function resetSnakesBoard(totalQuestions) {
+      window.clearInterval(diceInterval);
+      window.clearTimeout(diceTimeout);
+      diceInterval = 0;
+      diceTimeout = 0;
+      boardCell = 1;
+      answeredQuestions = 0;
+      byId("dice-face").removeAttribute("data-value");
+      byId("dice-face").classList.remove("rolling");
+      byId("dice-move").textContent = "—";
+      byId("dice-indicator").setAttribute("aria-label", "Dado sin lanzar");
+      updateSnakesBoard(0, totalQuestions);
+    }
+
+    function rollSnakesDice(answered, totalQuestions, isCorrect) {
+      if (answered <= answeredQuestions) return;
+      answeredQuestions = answered;
+
+      const nextButton = byId("next-question");
+      if (boardCell === 100) {
+        updateSnakesBoard(answered, totalQuestions, "¡Tablero completado!");
+        nextButton.disabled = false;
+        nextButton.focus();
+        return;
+      }
+
+      const roll = Math.floor(Math.random() * 6) + 1;
+      const diceFace = byId("dice-face");
+      const diceIndicator = byId("dice-indicator");
+      const diceMove = byId("dice-move");
+      diceFace.classList.add("rolling");
+      diceIndicator.setAttribute("aria-label", "Lanzando el dado");
+      diceMove.textContent = "…";
+      byId("mini-game-status").textContent = `Lanzando dado · ${answered}/${totalQuestions} preguntas · casilla ${boardCell}/100`;
+      nextButton.disabled = true;
+
+      diceInterval = window.setInterval(() => {
+        diceFace.dataset.value = String(diceFaces[Math.floor(Math.random() * diceFaces.length)]);
+      }, 70);
+      diceTimeout = window.setTimeout(() => {
+        window.clearInterval(diceInterval);
+        diceInterval = 0;
+        diceTimeout = 0;
+        diceFace.classList.remove("rolling");
+        diceFace.dataset.value = String(roll);
+
+        const signedMove = isCorrect ? roll : -roll;
+        boardCell = Math.max(1, Math.min(100, boardCell + signedMove));
+        const movement = isCorrect ? `+${roll}` : `−${roll}`;
+        let eventText = `Dado ${roll}: ${movement}`;
+
+        if (isCorrect) {
+          const ladder = boardLadders.find(([start]) => start === boardCell);
+          if (ladder) {
+            boardCell = ladder[1];
+            eventText += ` · ¡Escalera! ${ladder[0]} → ${ladder[1]}`;
+          }
+        } else {
+          const snake = boardSnakes.find(([start]) => start === boardCell);
+          if (snake) {
+            boardCell = snake[1];
+            eventText += ` · ¡Serpiente! ${snake[0]} → ${snake[1]}`;
+          }
+        }
+
+        if (boardCell === 100) eventText = `¡Meta! · Dado ${roll}: +${roll}`;
+        updateSnakesBoard(answered, totalQuestions, eventText);
+        diceMove.textContent = movement;
+        diceIndicator.setAttribute("aria-label", `Dado: ${roll}. ${isCorrect ? "Avanza" : "Retrocede"} ${roll} casillas.`);
+        nextButton.disabled = false;
+        nextButton.focus();
+      }, 700);
+    }
+
+    function showScreen(id) {
+      screens.forEach((screenId) => byId(screenId).classList.toggle("hidden", screenId !== id));
+      byId("home-cabinet").classList.toggle("hidden", id !== "home-screen");
+      if (id === "home-screen" || id === "scores-screen") setWorld(1);
+    }
+
+    function setWorld(level, scene = 0) {
+      document.body.dataset.level = String(level);
+      document.body.dataset.scene = String(scene);
+      byId("level-label").textContent = worlds[level].label;
+    }
+
+    function sceneForQuestion(questionIndex) {
+      const levelOffset = Math.floor(questionIndex / 10) * 3;
+      return levelOffset + (questionIndex % 10) % 3;
+    }
+
+    function showWasmError() {
+      byId("start-button").disabled = true;
+      byId("start-button").textContent = "Juego no disponible";
+      byId("home-message").textContent =
+        "No se pudo cargar el juego WebAssembly. Compílalo con Emscripten y abre esta página desde un servidor local.";
+    }
+
+    function initializeGameApi() {
+      if (gameApi) return;
+      gameApi = {
+        start: Module.cwrap("juegoIniciarWasm", null, []),
+        totalQuestions: Module.cwrap("juegoTotalPreguntasWasm", "number", []),
+        questionIndex: Module.cwrap("juegoIndicePreguntaWasm", "number", []),
+        questionLevel: Module.cwrap("juegoNivelPreguntaWasm", "number", ["number"]),
+        question: Module.cwrap("juegoEnunciadoWasm", "string", ["number"]),
+        choice: Module.cwrap("juegoOpcionWasm", "string", ["number", "number"]),
+        correctAnswer: Module.cwrap("juegoRespuestaCorrectaWasm", "number", ["number"]),
+        lives: Module.cwrap("juegoVidasWasm", "number", []),
+        restoreLives: Module.cwrap("juegoRestaurarVidasNivelWasm", null, []),
+        score: Module.cwrap("juegoPuntajeWasm", "number", []),
+        answer: Module.cwrap("juegoResponderWasm", "number", ["number"]),
+        advance: Module.cwrap("juegoAvanzarWasm", "number", [])
+      };
+      byId("start-button").disabled = false;
+      byId("start-button").textContent = "Comenzar aventura";
+      byId("home-message").textContent = "";
+    }
+
+    window.addEventListener("wasm-ready", initializeGameApi);
+    window.addEventListener("wasm-error", showWasmError);
+
+    if (window.gameWasmReady) initializeGameApi();
+    if (window.gameWasmFailed) showWasmError();
+
+    function startGame(event) {
+      event.preventDefault();
+      if (!gameApi) {
+        showWasmError();
+        return;
+      }
+      const input = byId("player-name");
+      player = input.value.trim();
+      if (!player) {
+        byId("home-message").textContent = "Escribe tu nombre para comenzar.";
+        input.focus();
+        return;
+      }
+      if (player.includes(",")) {
+        byId("home-message").textContent = "El nombre no puede contener comas porque puntajes.txt usa ese separador.";
+        input.focus();
+        return;
+      }
+      gameApi.start();
+      gameFinalizing = false;
+      byId("home-message").textContent = "";
+      resetSnakesBoard(gameApi.totalQuestions());
+      showScreen("game-screen");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const questionIndex = gameApi.questionIndex();
+      const totalQuestions = gameApi.totalQuestions();
+      const level = gameApi.questionLevel(questionIndex);
+      setWorld(level, sceneForQuestion(questionIndex));
+      byId("fight-announcer").classList.add("hidden");
+      byId("fight-announcer").classList.remove("win", "lose", "finisher");
+      byId("question-count").textContent = `Pregunta ${questionIndex + 1} de ${totalQuestions}`;
+      byId("lives").textContent = `${"♥ ".repeat(gameApi.lives())}${"♡ ".repeat(3 - gameApi.lives())}`;
+      byId("lives").setAttribute("aria-label", `${gameApi.lives()} de 3 vidas restantes`);
+      byId("score").textContent = `Puntaje: ${gameApi.score()}`;
+      byId("level-eyebrow").textContent = `Mundo ${level} · ${worlds[level].topic}`;
+      byId("question").textContent = gameApi.question(questionIndex);
+      byId("progress").style.width = `${(questionIndex / totalQuestions) * 100}%`;
+      byId("progress").style.background = level === 3 ? "#e39469" : level === 2 ? "#a5c9e8" : "#c8db9c";
+      byId("feedback").textContent = "";
+      byId("feedback").className = "feedback";
+      byId("next-question").classList.add("hidden");
+      byId("answers").replaceChildren();
+
+      Array.from({ length: 4 }, (_, index) => gameApi.choice(questionIndex, index)).forEach((choice, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "answer";
+        button.setAttribute("aria-label", `Opción ${letters[index]}: ${choice}`);
+        const key = document.createElement("span");
+        key.className = "answer-key";
+        key.textContent = letters[index];
+        button.append(key, document.createTextNode(choice));
+        button.addEventListener("click", () => selectAnswer(index));
+        byId("answers").append(button);
+      });
+    }
+
+    function selectAnswer(selected) {
+      const questionIndex = gameApi.questionIndex();
+      const answerResult = gameApi.answer(selected);
+      if (answerResult < 0) return;
+      const answerLevel = gameApi.questionLevel(questionIndex);
+      if (answerLevel === 2 || answerLevel === 3) {
+        const announcer = byId("fight-announcer");
+        const finisher = answerLevel === 3;
+        byId("fight-announcer-label").textContent = finisher
+          ? answerResult === 1 ? "FATALITY" : "DEFEAT"
+          : answerResult === 1 ? "YOU WIN" : "YOU LOSE";
+        announcer.classList.toggle("win", answerResult === 1);
+        announcer.classList.toggle("lose", answerResult === 0);
+        announcer.classList.toggle("finisher", finisher);
+        announcer.classList.remove("hidden");
+      }
+      const buttons = byId("answers").querySelectorAll("button");
+      buttons.forEach((button) => { button.disabled = true; });
+      const feedback = byId("feedback");
+
+      if (answerResult === 1) {
+        const earned = gameApi.questionLevel(questionIndex) * 10;
+        buttons[selected].classList.add("correct");
+        feedback.textContent = `¡Correcto! Has ganado ${earned} puntos.`;
+        feedback.classList.add("success");
+      } else {
+        const correctAnswer = gameApi.correctAnswer(questionIndex);
+        buttons[selected].classList.add("incorrect");
+        buttons[correctAnswer].classList.add("correct");
+        feedback.textContent = `No era esa. La respuesta correcta es ${letters[correctAnswer]}) ${gameApi.choice(questionIndex, correctAnswer)}.`;
+        feedback.classList.add("error");
+      }
+
+      byId("lives").textContent = `${"♥ ".repeat(gameApi.lives())}${"♡ ".repeat(3 - gameApi.lives())}`;
+      byId("lives").setAttribute("aria-label", `${gameApi.lives()} de 3 vidas restantes`);
+      byId("score").textContent = `Puntaje: ${gameApi.score()}`;
+      byId("next-question").textContent = gameApi.lives() === 0 || questionIndex === gameApi.totalQuestions() - 1
+        ? "Ver resultado"
+        : "Continuar";
+      byId("next-question").classList.remove("hidden");
+      byId("next-question").disabled = true;
+      rollSnakesDice(questionIndex + 1, gameApi.totalQuestions(), answerResult === 1);
+    }
+
+    function continueGame() {
+      const previousLevel = gameApi.questionLevel(gameApi.questionIndex());
+      const previousLives = gameApi.lives();
+      if (!gameApi.advance()) {
+        finishGame();
+        return;
+      }
+      const newLevel = gameApi.questionLevel(gameApi.questionIndex());
+      if (newLevel !== previousLevel) {
+        gameApi.restoreLives();
+      }
+      renderQuestion();
+      if (newLevel !== previousLevel && previousLives < 3 && gameApi.lives() === 3) {
+        byId("feedback").textContent = "¡Nivel superado! Tus vidas se restauraron a 3.";
+        byId("feedback").classList.add("success");
+      }
+      byId("question").focus();
+    }
+
+    function normalizeResult(result) {
+      const cleaned = typeof result === "string" ? result.trim() : "";
+      const lowered = cleaned.toLowerCase();
+      if (lowered === "victoria" || lowered === "victory") return "Victoria";
+      if (lowered === "derrota" || lowered === "defeat") return "Derrota";
+      return "";
+    }
+
+    function normalizeScoreRecord(record) {
+      if (!record || typeof record !== "object") return null;
+      const name = typeof record.name === "string" ? record.name.trim() : "";
+      const points = Number(record.points);
+      const cleanResult = normalizeResult(record.result);
+      if (!name || !Number.isFinite(points) || !cleanResult) return null;
+      return {
+        name,
+        points,
+        level: Number.isFinite(Number(record.level)) ? Number(record.level) : 1,
+        result: cleanResult,
+        date: Number.isFinite(Number(record.date)) ? Number(record.date) : Date.now()
+      };
+    }
+
+    function getScores() {
+      const raw = localStorage.getItem(storageKey);
+      if (raw === null || raw === "") return [];
+
+      try {
+        const parsed = JSON.parse(raw);
+        const list = Array.isArray(parsed) ? parsed : (parsed && Array.isArray(parsed.scores) ? parsed.scores : []);
+        return list
+          .map(normalizeScoreRecord)
+          .filter(Boolean)
+          .sort((a, b) => b.points - a.points || a.date - b.date)
+          .slice(0, 100);
+      } catch (error) {
+        console.warn("No se pudieron leer los puntajes guardados en el navegador.", error);
+        return [];
+      }
+    }
+
+    async function saveScore(result) {
+      const normalizedResult = normalizeResult(result);
+      const record = {
+        name: player,
+        points: Number(gameApi.score()),
+        level: Number(gameApi.questionLevel(gameApi.questionIndex())),
+        result: normalizedResult,
+        date: Date.now()
+      };
+      let browserSaved = false;
+      let browserError = "";
+
+      try {
+        const scores = getScores();
+        scores.push(record);
+        scores.sort((a, b) => b.points - a.points || a.date - b.date);
+        localStorage.setItem(storageKey, JSON.stringify(scores.slice(0, 100)));
+        browserSaved = true;
+      } catch (error) {
+        console.error("No se pudo guardar el puntaje en el navegador.", error);
+        browserError = "No se pudo guardar el puntaje en el navegador.";
+      }
+
+      try {
+        const response = await fetch("/api/scores", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(record)
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "No se pudo guardar el puntaje en puntajes.txt.");
+        }
+        return browserError;
+      } catch (error) {
+        console.error("No se pudo guardar el resultado en puntajes.txt.", error);
+        if (browserSaved) {
+          return "Puntaje guardado en este navegador, pero no se pudo copiar a puntajes.txt. Abre el juego con run_game.bat para habilitar la copia.";
+        }
+        return [browserError, "No se pudo guardar el resultado en puntajes.txt. Abre el juego con run_game.bat para habilitar el guardado."]
+          .filter(Boolean)
+          .join(" ");
+      }
+    }
+
+    async function finishGame() {
+      if (gameFinalizing) return;
+      gameFinalizing = true;
+      const questionIndex = gameApi.questionIndex();
+      const level = gameApi.questionLevel(questionIndex);
+      const victory = gameApi.lives() > 0 && questionIndex === gameApi.totalQuestions() - 1;
+      const result = victory ? "Victoria" : "Derrota";
+      byId("fight-announcer").classList.add("hidden");
+      setWorld(victory ? 3 : level, sceneForQuestion(questionIndex));
+      byId("result-eyebrow").textContent = victory ? "Aventura completada" : "Fin de la partida";
+      byId("result-title").textContent = victory ? "¡Lo lograste!" : "La aventura termina aquí.";
+      byId("result-summary").textContent =
+        `${player}, conseguiste ${gameApi.score()} puntos y alcanzaste el mundo ${level}. ${victory ? "Has superado los tres mundos." : "Puedes volver a intentarlo cuando quieras."}`;
+      byId("result-message").textContent = "Guardando resultado en puntajes.txt...";
+      showScreen("result-screen");
+      setWorld(victory ? 3 : level, sceneForQuestion(questionIndex));
+      byId("result-message").textContent = await saveScore(result);
+    }
+
+    function renderScores(scores) {
+      const list = byId("scores-list");
+      list.replaceChildren();
+      byId("scores-empty").classList.toggle("hidden", scores.length !== 0);
+      byId("scores-table-wrap").classList.toggle("hidden", scores.length === 0);
+      scores.slice(0, 5).forEach((record, index) => {
+        const row = document.createElement("tr");
+        [String(index + 1), record.name, String(record.points), record.result].forEach((value) => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.append(cell);
+        });
+        list.append(row);
+      });
+    }
+
+    function mergeScores(...scoreLists) {
+      const uniqueScores = new Map();
+      scoreLists.flat().forEach((record) => {
+        const key = JSON.stringify([
+          record.name.toLocaleLowerCase(),
+          record.points,
+          record.level,
+          record.result
+        ]);
+        if (!uniqueScores.has(key)) uniqueScores.set(key, record);
+      });
+      return [...uniqueScores.values()]
+        .sort((a, b) => b.points - a.points || a.date - b.date)
+        .slice(0, 100);
+    }
+
+    async function showScores(returnTo) {
+      lastScreen = returnTo;
+      showScreen("scores-screen");
+      byId("scores-message").textContent = "";
+      let localScores = [];
+      try {
+        localScores = getScores();
+      } catch (error) {
+        console.error("No se pudieron cargar los puntajes locales.", error);
+        byId("scores-message").textContent = "No se pudieron leer los puntajes guardados en este navegador.";
+        renderScores([]);
+        return;
+      }
+
+      renderScores(localScores);
+      byId("scores-message").textContent = "Actualizando puntajes...";
+      try {
+        const response = await fetch("/api/scores", { cache: "no-store" });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || "No se pudo consultar puntajes.txt.");
+        }
+        if (!Array.isArray(payload.scores)) {
+          throw new Error("La respuesta del servidor no contiene una lista de puntajes.");
+        }
+        const serverScores = payload.scores.map(normalizeScoreRecord).filter(Boolean);
+        const scores = mergeScores(localScores, serverScores);
+        renderScores(scores);
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(scores));
+          byId("scores-message").textContent = "";
+        } catch (error) {
+          console.warn("No se pudo guardar una copia local de los puntajes.", error);
+          byId("scores-message").textContent = "Puntajes actualizados desde el servidor; no se pudo guardar una copia en este navegador.";
+        }
+      } catch (error) {
+        console.error("No se pudieron actualizar los puntajes desde el servidor.", error);
+        byId("scores-message").textContent = localScores.length
+          ? "No se pudieron actualizar desde el servidor; se muestran los puntajes guardados en este navegador."
+          : "No se pudieron consultar los puntajes del servidor. Abre el juego con run_game.bat.";
+      }
+    }
+
+    initializeSnakesBoard();
+    byId("start-form").addEventListener("submit", startGame);
+    byId("show-rules").addEventListener("click", () => showScreen("rules-screen"));
+    byId("rules-back").addEventListener("click", () => showScreen("home-screen"));
+    byId("next-question").addEventListener("click", continueGame);
+    byId("show-scores").addEventListener("click", () => showScores("home-screen"));
+    byId("result-scores").addEventListener("click", () => showScores("result-screen"));
+    byId("scores-back").addEventListener("click", () => showScreen(lastScreen));
+    byId("play-again").addEventListener("click", () => {
+      showScreen("home-screen");
+      byId("player-name").focus();
+    });
+  </script>
+</body>
+</html>

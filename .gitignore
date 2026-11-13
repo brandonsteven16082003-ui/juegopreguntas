@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.expo/
+npm-debug.log*
+puntajes.txt
+juego_preguntas.exe
+__pycache__/
