@@ -5,3 +5,4 @@ npm-debug.log*
 puntajes.txt
 juego_preguntas.exe
 __pycache__/
+.tsupgrader/

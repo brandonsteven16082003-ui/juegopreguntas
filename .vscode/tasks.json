@@ -166,13 +166,6 @@
 			],
 			"isBackground": true,
 			"problemMatcher": []
-		},
-		{
-			"label": "Publicar proyecto en GitHub",
-			"type": "shell",
-			"command": "git init; if ($LASTEXITCODE -ne 0) { exit 1 }; git branch -M main; if ($LASTEXITCODE -ne 0) { exit 1 }; git remote add origin https://github.com/brandonsteven16082003-ui/juegopreguntas.git; if ($LASTEXITCODE -ne 0) { exit 1 }; git add -A; if ($LASTEXITCODE -ne 0) { exit 1 }; git commit -m 'Initial project upload' -m ('Co-authored-by: Copilot ' + [char]60 + '223556219+Copilot@users.noreply.github.com' + [char]62); if ($LASTEXITCODE -ne 0) { exit 1 }; git push -u origin main",
-			"isBackground": false,
-			"problemMatcher": []
 		}
 	]
 }
